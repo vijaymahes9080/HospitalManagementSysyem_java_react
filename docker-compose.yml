@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: hospital
+    volumes:
+      - ./hospital.sql:/docker-entrypoint-initdb.d/hospital.sql
+    ports:
+      - "3306:3306"
+    command: --default-authentication-plugin=mysql_native_password
+
+  app:
+    build: .
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_NAME: hospital
+      DB_USER: root
+      DB_PASS: root
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
